@@ -1,5 +1,5 @@
 {
   "mangas": ["One Piece"],
   "PerferredFallBack": "Check Daily",
-  "Lookback": 30
+  "Lookback": 365
 }
