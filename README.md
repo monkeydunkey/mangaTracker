@@ -1,5 +1,5 @@
-# animeTracker
-A lightweight program to track new release of you favorite anime
+# mangaTracker
+A lightweight program to track new release of you favorite manga
 
 TODOs
 1. Create a scrapper for MangaStream, MangaPanda and Batoto
