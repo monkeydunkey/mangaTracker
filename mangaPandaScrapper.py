@@ -14,6 +14,15 @@ class mangaPandaScrapper(scrapper):
         self.endDate = self.today + timedelta(-1 * lookback)
         super(self.__class__, self).__init__('mangaPanda')
 
+    def checkRelease(self, manga):
+        '''
+            Check if the manga was released or not
+        '''
+        release, _ = self.getData(self.url)
+        release = self.parseData(release)
+        return release.get(manga, None) is not None
+
+
     def parseData(self, data):
         '''
             Parse the data scrapped from the site
@@ -23,7 +32,7 @@ class mangaPandaScrapper(scrapper):
             releaseDate = str(dateparser.parse(en.select('.c1')[0].text).date())
             manga = en.select('.chapter')[0].text
             mangaList[manga] = mangaList.get(manga, []) + [releaseDate]
-        self.storeToDataBase(mangaList)
+        return mangaList
 
 
     def getData(self, url):
@@ -51,4 +60,4 @@ class mangaPandaScrapper(scrapper):
             data.extend(releaseDates)
             oldestRelease = self.getLastReleaseDate(releaseDates)
 
-        self.parseData(data)
+        self.storeToDataBase(self.parseData(data))
