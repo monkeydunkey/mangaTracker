@@ -41,7 +41,10 @@ def getSchedule(manga, db, lookback):
             releaseDays = map(lambda x: x.weekday(), releaseDates)
             averageDayOfWeek = float(reduce(lambda x, y: x+y, releaseDays))/len(releaseDays)
             approxSchedule = round(averageDayOfWeek)
-            schedule = 'Weekly on ' + calendar.day_name[int(approxSchedule)]
+            schedule = {
+            'type': 'Weekly',
+            "dow": calendar.day_name[int(approxSchedule)]
+            }
         else:
             schedule = 'Non Weekly scheduler not Implemented Yet'
         '''
@@ -58,9 +61,10 @@ def scheduleSearch():
     configData = loadFile(config)
     mangaList = configData['mangas']
     db = loadFile(dataFile)
+    schedules = []
     for manga in mangaList:
-        print getSchedule(manga, db, configData['Lookback'])
-
+        schedules.append(getSchedule(manga, db, configData['Lookback']))
+    return schedules
 
 if __name__ == '__main__':
     scheduleSearch()
