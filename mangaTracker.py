@@ -9,6 +9,15 @@ Control Flow:
 
 import utilities
 import json
+from crontab import CronTab
+import scheduler
+import os, getpass
+def setWeeklySchedule(manga, schedule):
+    cron   = CronTab(getpass.getuser())
+    job  = cron.new(command='python checker.py ' + manga + ' >> mangaFound.txt')
+    job.dow.on(schedule[:3].upper())
+    job.enable()
+    cron.write()
 
 configFile = 'config.json'
 mangaList = None
@@ -19,5 +28,14 @@ with open(configFile) as e:
 mangaList = config['mangas']
 lookback = config['Lookback']
 releaseChecker = utilities.releaseDataGrabber()
-getReleaseHistory = releaseChecker.run(mangaList, lookback)
-print getReleaseHistory
+releaseHistory = releaseChecker.run(mangaList, lookback)
+print 'The release history is', releaseHistory
+schedules = scheduler.scheduleSearch()
+for i, sch in enumerate(schedules):
+    if type(sch) == type({}):
+        if sch['type'] == 'Weekly':
+            setWeeklySchedule(mangaList[i], sch['dow'])
+        else:
+            print 'Non weekly schedule not implemented yet'
+    else:
+        print 'There was no schedule returned'
